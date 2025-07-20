@@ -1,7 +1,7 @@
 // src/App.jsx
 // src/App.jsx
-import ProfilePage from './ProfilePage';
-import UserContext from './UserContext'; // ✅ Import the context
+import ProfilePage from './ProfilePage.jsx';
+import UserContext from './UserContext.jsx'; // ✅ Import the context
 
 function App() {
   // User data to share across components
