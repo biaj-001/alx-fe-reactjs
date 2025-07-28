@@ -1,36 +1,40 @@
- // RecipeList component
-// AddRecipeForm component
-  import { useState } from 'react';
-  import { useRecipeStore } from './component/recipeStore';
+import { useState } from 'react';
+import { useRecipeStore } from '../component/recipeStore';
 
-  const AddRecipeForm = () => {
-    const addRecipe = useRecipeStore(state => state.addRecipe);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+const AddRecipeForm = () => {
+  const addRecipe = useRecipeStore((state) => state.addRecipe);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      addRecipe({ id: Date.now(), title, description });
-      setTitle('');
-      setDescription('');
-    };
-
-    return (
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
-        />
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Description"
-        />
-        <button type="submit">Add Recipe</button>
-      </form>
-    );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!title || !description) return;
+    addRecipe({ id: Date.now(), title, description });
+    setTitle('');
+    setDescription('');
   };
 
-  export default AddRecipeForm;
+  return (
+    <form onSubmit={handleSubmit} className="mb-4">
+      <input
+        className="block mb-2 p-2 border"
+        type="text"
+        placeholder="Recipe Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <textarea
+        className="block mb-2 p-2 border"
+        placeholder="Recipe Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <button className="bg-blue-500 text-white px-4 py-2" type="submit">
+        Add Recipe
+      </button>
+    </form>
+  );
+};
+
+export default AddRecipeForm;
+
