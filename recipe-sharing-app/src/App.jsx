@@ -1,7 +1,7 @@
-import AddRecipeForm from './component/AddRecipeForm';
-import RecipeList from './component/RecipeList';
-import FavoritesList from './component/FavoritesList';
-import RecommendationsList from './component/RecommendationsList';
+import AddRecipeForm from './component/AddRecipeForm.jsx';
+import RecipeList from './component/RecipeList.jsx';
+import FavoritesList from './component/FavoritesList.jsx';
+import RecommendationsList from './component/RecommendationsList.jsx';
 
 const App = () => {
   return (
