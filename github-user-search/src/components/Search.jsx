@@ -1,50 +1,83 @@
-import React, { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+import React, { useState } from 'react';
+import { searchUsers } from '../services/githubService';
 
 const Search = () => {
-  const [username, setUsername] = useState("");
-  const [userData, setUserData] = useState(null);
+  const [username, setUsername] = useState('');
+  const [location, setLocation] = useState('');
+  const [repos, setRepos] = useState('');
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [login, setLogin] = useState("");
 
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setLogin("");
     try {
-      const data = await fetchUserData(username);
-      setUserData(data);
-    } catch (err) {
-      setLogin("Looks like we cant find the user.");
+      // Call the updated service function with all search criteria
+      const results = await searchUsers(username, location, repos);
+      setUsers(results);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setUsers([]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="mx-20">
-        <h1>GitHub User Search</h1>
-      <form onSubmit={handleSearch}>
+    <div className="p-4">
+      <form onSubmit={handleSearch} className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
         <input
           type="text"
-          placeholder="Search GitHub user"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter GitHub username or keyword"
+          className="p-2 border border-gray-300 rounded-md flex-grow"
         />
-        <button type="submit">Search</button>
+        <input
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Filter by location (e.g., Kenya)"
+          className="p-2 border border-gray-300 rounded-md flex-grow"
+        />
+        <input
+          type="number"
+          value={repos}
+          onChange={(e) => setRepos(e.target.value)}
+          placeholder="Min repositories"
+          className="p-2 border border-gray-300 rounded-md flex-grow"
+        />
+        <button
+          type="submit"
+          className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          disabled={loading}
+        >
+          {loading ? 'Searching...' : 'Search'}
+        </button>
       </form>
 
-      {loading && <p>Loading...</p>}
-      {login && <p>{login}</p>}
-      {userData && (
-        <div>
-          <img src={userData.avatar_url} alt={userData.name} />
-          <h3>{userData.name}</h3>
-          <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
-            View Profile
-          </a>
-        </div>
-      )}
+      {/* This is the part that was missing and causing the "doesn't contain: ['map']" error */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {users.length > 0 ? (
+          users.map((user) => (
+            <div key={user.id} className="bg-white p-4 rounded-md shadow-md">
+              <div className="flex items-center">
+                <img src={user.avatar_url} alt={${user.login} avatar} className="w-16 h-16 rounded-full mr-4" />
+                <div>
+                  <a href={user.html_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold text-lg">
+                    {user.login}
+                  </a>
+                  {user.location && <p className="text-gray-600">Location: {user.location}</p>}
+                  {/* The API results might not contain 'public_repos' directly, you might need a separate call for detailed user info */}
+                  {user.public_repos && <p className="text-gray-600">Repositories: {user.public_repos}</p>}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          !loading && <p className="text-center text-gray-500 mt-4">No users found. Try a different search.</p>
+        )}
+      </div>
     </div>
   );
 };
