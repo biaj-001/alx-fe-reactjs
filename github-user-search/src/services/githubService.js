@@ -1,8 +1,26 @@
-import axios from "axios";
+import axios from 'axios';
 
-const fetchUserData = async (username) => {
-  const response = await axios.get(`https://api.github.com/users/${username}`);
-  return response.data;
+const GITHUB_API_URL = 'https://api.github.com/search/users';
+
+// This function now accepts additional parameters for advanced search
+export const searchUsers = async (username, location = '', repos = '') => {
+  try {
+    let query = username;
+
+    // Build the advanced query string
+    if (location) {
+      query += +location:${location};
+    }
+    if (repos) {
+      query += +repos:>=${repos};
+    }
+
+    const response = await axios.get(${GITHUB_API_URL}?q=${query});
+    
+    // The API response for search is an object with an 'items' array
+    return response.data.items;
+  } catch (error) {
+    console.error('Error in githubService:', error);
+    throw error;
+  }
 };
-
-export { fetchUserData };
