@@ -4,7 +4,7 @@ import { searchUsers } from '../services/githubService';
 const Search = () => {
   const [username, setUsername] = useState('');
   const [location, setLocation] = useState('');
-  const [repos, setRepos] = useState('');
+  const [minRepos, setMinRepos] = useState(''); // Renamed state variable
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -12,8 +12,8 @@ const Search = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Call the updated service function with all search criteria
-      const results = await searchUsers(username, location, repos);
+      // Pass the new state variable to the service function
+      const results = await searchUsers(username, location, minRepos);
       setUsers(results);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -42,8 +42,8 @@ const Search = () => {
         />
         <input
           type="number"
-          value={repos}
-          onChange={(e) => setRepos(e.target.value)}
+          value={minRepos} // Use the new state variable here
+          onChange={(e) => setMinRepos(e.target.value)}
           placeholder="Min repositories"
           className="p-2 border border-gray-300 rounded-md flex-grow"
         />
@@ -56,7 +56,6 @@ const Search = () => {
         </button>
       </form>
 
-      {/* This is the part that was missing and causing the "doesn't contain: ['map']" error */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {users.length > 0 ? (
           users.map((user) => (
@@ -68,7 +67,6 @@ const Search = () => {
                     {user.login}
                   </a>
                   {user.location && <p className="text-gray-600">Location: {user.location}</p>}
-                  {/* The API results might not contain 'public_repos' directly, you might need a separate call for detailed user info */}
                   {user.public_repos && <p className="text-gray-600">Repositories: {user.public_repos}</p>}
                 </div>
               </div>
