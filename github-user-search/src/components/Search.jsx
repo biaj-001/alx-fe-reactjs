@@ -1,79 +1,52 @@
-import React, { useState } from 'react';
-import { searchUsers } from '../services/githubService';
+import React, { useState } from "react";
+import { fetchUserData } from "../services/githubService";
 
-function Search() {
-  const [username, setUsername] = useState('');
-  const [location, setLocation] = useState('');
-  const [minRepos, setMinRepos] = useState('');
-  const [users, setUsers] = useState([]);
+const Search = () => {
+  const [username, setUsername] = useState("");
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [login, setLogin] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setUsers([]);
-
+    setLogin("");
     try {
-      const data = await searchUsers(username, location, minRepos);
-      setUsers(data.items);
+      const data = await fetchUserData(username);
+      setUserData(data);
     } catch (err) {
-      setError('Something went wrong while searching.');
+      setLogin("Looks like we cant find the user.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-3 mb-6">
+    <div className="mx-20">
+        <h1>GitHub User Search</h1>
+      <form onSubmit={handleSearch}>
         <input
           type="text"
+          placeholder="Search GitHub user"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          className="px-4 py-2 border rounded"
         />
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Location"
-          className="px-4 py-2 border rounded"
-        />
-        <input
-          type="number"
-          value={minRepos}
-          onChange={(e) => setMinRepos(e.target.value)}
-          placeholder="Min Repositories"
-          className="px-4 py-2 border rounded"
-        />
-        <button type="submit" className="sm:col-span-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          Search
-        </button>
+        <button type="submit">Search</button>
       </form>
 
       {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {users.length > 0 && (
-        <ul className="space-y-4">
-          {users.map((user) => (
-            <li key={user.id} className="bg-white p-4 rounded shadow flex items-center gap-4">
-              <img src={user.avatar_url} alt={user.login} className="w-16 h-16 rounded-full" />
-              <div>
-                <h3 className="font-semibold text-lg">{user.login}</h3>
-                <a href={user.html_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                  View Profile
-                </a>
-              </div>
-            </li>
-          ))}
-        </ul>
+      {login && <p>{login}</p>}
+      {userData && (
+        <div>
+          <img src={userData.avatar_url} alt={userData.name} />
+          <h3>{userData.name}</h3>
+          <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
+            View Profile
+          </a>
+        </div>
       )}
     </div>
   );
-}
+};
 
 export default Search;
