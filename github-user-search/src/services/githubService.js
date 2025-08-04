@@ -3,7 +3,7 @@ import axios from 'axios';
 const GITHUB_API_URL = 'https://api.github.com/search/users';
 
 // This function now accepts additional parameters for advanced search
-export const searchUsers = async (username, location = '', repos = '') => {
+export const searchUsers = async (username, location = '', miniRepos = '') => {
   try {
     let query = username;
 
@@ -11,8 +11,8 @@ export const searchUsers = async (username, location = '', repos = '') => {
     if (location) {
       query += +location:${location};
     }
-    if (repos) {
-      query += +repos:>=${repos};
+    if (miniRepos) {
+      query += +repos:>=${miniRepos};
     }
 
     const response = await axios.get(${GITHUB_API_URL}?q=${query});
