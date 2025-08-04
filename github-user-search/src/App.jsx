@@ -3,22 +3,28 @@ import Search from './components/Search';
 import { fetchUserData } from './services/githubService';
 
 const App = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // State variables to manage the API call's lifecycle
+  const [user, setUser] = useState(null);       // Stores the user data
+  const [loading, setLoading] = useState(false); // Manages the loading state
+  const [error, setError] = useState(null);     // Stores the error message
 
+  // Function to handle the search request
   const handleSearch = async (username) => {
+    // Reset state before starting a new search
     setLoading(true);
     setError(null);
     setUser(null);
 
     try {
+      // Call the service to fetch user data
       const userData = await fetchUserData(username);
+      // On success, update the user state
       setUser(userData);
     } catch (err) {
-      // Use the exact error message required by the test
+      // On error, update the error state with the required message
       setError("Looks like we can't find the user.");
     } finally {
+      // Always stop the loading indicator
       setLoading(false);
     }
   };
@@ -29,7 +35,10 @@ const App = () => {
       <Search onSearch={handleSearch} />
       
       <div className="results-container">
-        {/* Conditional rendering for loading, error, or user data */}
+        {/*
+          This is the conditional rendering section.
+          It displays different content based on the application's state.
+        */}
         {loading && <p>Loading...</p>}
         {error && <p>{error}</p>}
         
