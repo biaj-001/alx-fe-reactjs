@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Search from './components/Search';
 import { fetchUserData } from './services/githubService';
-import './App.css'; // Assuming you have some basic styling
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -9,18 +8,21 @@ const App = () => {
   const [error, setError] = useState(null);
 
   const handleSearch = async (username) => {
-    // Reset states before starting a new search
+    // 1. Reset states before a new search
     setLoading(true);
     setError(null);
     setUser(null);
 
     try {
+      // 2. Await the API call
       const userData = await fetchUserData(username);
+      // 3. On success, set the user data
       setUser(userData);
     } catch (err) {
-      // Set the specific error message as per the task description
-      setError("Looks like we can't find the user.");
+      // 4. On error, set the specific error message
+      setError(err.message);
     } finally {
+      // 5. Always set loading to false after the request
       setLoading(false);
     }
   };
@@ -31,7 +33,7 @@ const App = () => {
       <Search onSearch={handleSearch} />
       
       <div className="results-container">
-        {/* Conditional rendering based on the state */}
+        {/* Conditional Rendering logic */}
         {loading && <p>Loading...</p>}
         {error && <p>{error}</p>}
         
