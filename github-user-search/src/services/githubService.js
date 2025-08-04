@@ -1,26 +1,17 @@
 import axios from 'axios';
 
-const GITHUB_API_URL = 'https://api.github.com/search/users?q";
-
-// This function now accepts additional parameters for advanced search
-export const searchUsers = async (username, location = '', minRepos = '') => {
+/**
+ * Fetches user data from the GitHub API.
+ * @param {string} username - The GitHub username to search for.
+ * @returns {Promise<object>} The user data object.
+ * @throws {Error} If the API request fails.
+ */
+export const fetchUserData = async (username) => {
   try {
-    let query = username;
-
-    // Build the advanced query string
-    if (location) {
-      query += +location:${location};
-    }
-    if (minRepos) {
-      query += +repos:>=${minRepos};
-    }
-
-    const response = await axios.get(${GITHUB_API_URL}?q=${query});
-    
-    // The API response for search is an object with an 'items' array
-    return response.data.items;
+    const response = await axios.get(https://api.github.com/users/${username});
+    return response.data;
   } catch (error) {
-    console.error('Error in githubService:', error);
-    throw error;
+    // Re-throw a custom error to be handled by the component
+    throw new Error("Looks like we can't find the user.");
   }
 };
