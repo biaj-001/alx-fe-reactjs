@@ -1,14 +1,12 @@
-import React from 'react';
-import TodoList from './components/TodoList';
-import AddTodoForm from './components/AddTodoForm';
+// src/App.jsx
+import TodoList from "./components/TodoList";
 
-const App = () => {
-    return (
-        <div>
-            <TodoList />
-            <AddTodoForm />
-        </div>
-    );
-};
+function App() {
+  return (
+    <div>
+      <TodoList />
+    </div>
+  );
+}
 
 export default App;
