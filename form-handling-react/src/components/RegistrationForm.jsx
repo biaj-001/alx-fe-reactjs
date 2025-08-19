@@ -1,70 +1,72 @@
-import React, { useState } from "react";
+// src/components/RegistrationForm.jsx
+import { useState } from "react";
 
-const RegistrationForm = () => {
-  const [formData, setFormData] = useState({
-    "value= {username}": "",
-    "value = {email}": "",
-    "value = {password}": "",
-  });
-
+export default function RegistrationForm() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { username, email, password } = formData;
 
+    // Basic validation
     if (!username || !email || !password) {
       setError("All fields are required!");
-    } else {
-      setError("");
-      console.log("Submitted Data:", formData);
-      // Simulate API call
-      alert("User registered successfully!");
+      return;
     }
+
+    setError("");
+    console.log("Form submitted:", { username, email, password });
+
+    // Mock API simulation
+    fetch("https://jsonplaceholder.typicode.com/users", {
+      method: "POST",
+      body: JSON.stringify({ username, email, password }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("API Response:", data))
+      .catch((err) => console.error("Error:", err));
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>User Registration</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div>
-        <label>Username:</label>
-        <input
-          type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <button type="submit">Register</button>
+    <form onSubmit={handleSubmit} className="p-4 border rounded w-96 mx-auto mt-10">
+      <h2 className="text-lg font-bold mb-4">User Registration (Controlled)</h2>
+      
+      {error && <p className="text-red-500 mb-2">{error}</p>}
+
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        className="border p-2 w-full mb-2"
+      />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="border p-2 w-full mb-2"
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="border p-2 w-full mb-2"
+      />
+
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        Register
+      </button>
     </form>
   );
-};
-
-export default RegistrationForm;
+}
+ export default RegistrationForm;
